@@ -32,6 +32,16 @@ async function immediateLoadEventListener() {
 }
 
 
+
+
+
+
+//* Reusable Functions *//
+
+
+
+
+
 async function initialFunc() {
 	/**
 	* @type {Array}
@@ -220,378 +230,7 @@ async function showCart() {
 }
 
 
-//* Function HTML *//
 
-/**
- * @param {Number} subTotal
- * @returns {String};
- */
-function checkoutHtml(subTotal) {
-	return `<div class="card border-0 p-3">
-				<div class="d-flex justify-content-between">
-					<p class="font-secondary text-uppercase">Subtotal</p>
-					<p class="fw-500 price-tag">${toRupiah(subTotal)}</p>
-				</div>
-				<button class="btn btn-dark rounded-0 py-2 py-md-3 text-uppercase btn-checkout" data-bs-toggle="modal" data-bs-target="#formModal" data-bs-dismiss="offcanvas">Checkout</button>
-			</div>`;
-}
-
-/**
- * @param {Object} product
- * @returns {String}
- */
-function productCardHtml(product) {
-	const owlItem = (productCardHtml.caller.name === 'loadOwl');
-	const discountPrice = `<span class="text-center d-block price-tag">
-						   	    ${toRupiah(product.price - (product.price * 30 / 100))}
-						   </span>`;
-	const normalPrice = `<span class="text-center d-block price-tag
-							${owlItem ? 'text-mute text-decoration-line-through' : ''}" name="price">
-							${toRupiah(product.price)}
-						 </span>`;
-
-	return `<div class="product-image">
-				<a href="#detailModal" role="button" data-bs-toggle="modal" data-product-id="${product.id}">
-					<img src="${product.imageUrl}" class="img-fluid" alt=""/>
-				</a>
-			</div>
-			<div class="product-description">
-				<div class="product-description__title">
-					<h5 class="text-uppercase text-center mb-1">${product.title}</h5>
-				</div>
-				<div class="product-description__price">
-					${owlItem ? normalPrice + discountPrice : normalPrice}
-				</div>
-			</div>`
-}
-
-
-function paginationHtml(page) {
-	const nav = document.createElement('nav');
-	nav.setAttribute('aria-label', 'Products pagination');
-	nav.innerHTML = `<ul class="pagination products-pagination pagination-sm justify-content-center align-items-center">
-						<li class="page-item px-3 py-2">
-							<a href="javascript:void(0)" class="btn btn-prev lh-1 position-relative p-0 rounded-circle disabled">
-								<svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-arrow-left-circle"
-									viewBox="0 0 16 16">
-									<path fill-rule="evenodd"
-										d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8zm15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-4.5-.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5z" />
-								</svg>
-								<svg xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-									class="bi bi-arrow-left-circle-fill" viewBox="0 0 16 16">
-									<path
-										d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zm3.5 7.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5z" />
-								</svg>
-							</a>
-						</li>
-						<li class="products-pagination__page">Page ${page.currentPage} of ${page.totalPages}</li>
-						<li class="page-item px-3 py-2">
-							<a href="javascript:void(0)" class="btn btn-next lh-1 position-relative p-0 rounded-circle">
-								<svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-arrow-right-circle"
-									viewBox="0 0 16 16">
-									<path fill-rule="evenodd"
-										d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8zm15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H4.5z" />
-								</svg>
-								<svg xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-									class="bi bi-arrow-right-circle-fill" viewBox="0 0 16 16">
-									<path
-										d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0zM4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H4.5z" />
-								</svg>
-							</a>
-						</li>
-					</ul>`
-	return nav;
-}
-
-
-/**
- * @param {Object} product
- * @returns {String}
- */
-function productDetailHtml(product) {
-	const { title, imageUrl, price, description, sizeChartUrl, stock } = product;
-	let sizeOptions = '';
-	const selected = Object.values(product.stock).reduce((total, stock) => total + stock) > 0 ? 'Select Size' : 'SOLD OUT';
-
-
-	for (size in product.stock) {
-
-		if (product.stock[size] > 0) {
-			sizeOptions += `<option value="${size}">${size.toUpperCase()}</option>`;
-		}
-
-	}
-
-	return `<div class="modal-content">
-				<div class="modal-header">
-					<h3 class="modal-title" id="detailModalLabel">Product Detail</h3>
-					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-				</div>
-				<div class="modal-body">
-					<div class="card mb-3">
-						<div class="row g-0">
-							<div class="col-md-6">
-								<img class="product-img img-fluid" src="${imageUrl}" alt="${title}" />
-							</div>
-							<div class="col-md-6">
-								<div class="card-body">
-									<h4 class="card-title text-uppercase">${title}</h4>
-									<span class="card-subtitle badge rounded-0 bg-dark price-tag">${toRupiah(price)}</span>
-									<div class="accordion accordion-flush mt-4 mt-md-5" id="accordionExample">
-										<div class="accordion-item">
-											<h6 class="accordion-header" id="headingOne">
-												<button class="accordion-button px-0 py-2 shadow-none" type="button"
-													data-bs-toggle="collapse" data-bs-target="#collapseOne"
-													aria-expanded="true" aria-controls="collapseOne">
-													Deskripsi Produk
-												</button>
-											</h6>
-											<div id="collapseOne" class="accordion-collapse collapse show"
-												aria-labelledby="headingOne" data-bs-parent="#accordionExample">
-												<div class="accordion-body px-0">
-													${description}
-												</div>
-											</div>
-										</div>
-										<div class="accordion-item">
-											<h6 class="accordion-header" id="headingTwo">
-												<button class="accordion-button px-0 py-2 shadow-none collapsed"
-													type="button" data-bs-toggle="collapse"
-													data-bs-target="#collapseTwo" aria-expanded="false"
-													aria-controls="collapseTwo">
-													Panduan Ukuran
-												</button>
-											</h6>
-											<div id="collapseTwo" class="accordion-collapse collapse"
-												aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
-												<div class="accordion-body px-0">
-												<img class="img-fluid" src="${sizeChartUrl}" >
-												</div>	
-											</div>
-										</div>
-									</div>
-									<form class="mt-3 mt-md-5 form-order">
-										<div class="row">
-											<div class="col-md-6">
-												<div class="mb-2 mb-md-3">
-													<label for="selectSize"
-														class="form-label text-uppercase">Size</label>
-													<div class="form-order__size border-grey">
-														<select class="form-select border-0 select-size font-secondary" name="input_size" aria-label="Select product size">
-															<option selected>${selected}</option>
-															${sizeOptions}
-														</select>
-													</div>
-												</div>
-											</div>
-											<div class="col-md-6">
-												<div class="mb-3">
-													<label for="quantity"
-														class="form-label text-uppercase">Quantity</label>
-													<div class="form-order__quantity d-flex border-grey">
-														<button type="button"
-															class="btn p-0 border-0 btn-outline-dark btn-counter btn-min"
-															data-calc="-" data-cart_item-index="cart.itemIndex"
-															data-cart_item-size="cart.size" name="btn_min">
-															<svg xmlns="http://www.w3.org/2000/svg" width="12"
-																height="12" fill="currentColor" class="bi bi-dash-lg"
-																viewBox="0 0 16 16">
-																<path d="M0 8a1 1 0 0 1 1-1h14a1 1 0 1 1 0 2H1a1 1 0 0 1-1-1z" />
-															</svg>
-														</button>
-														<input class="form-control text-center border-0 input-qty font-secondary"
-															type="number" name="input_qty" value="1"
-															max="{product.stock[cart.size.toLowerCase()]}" disabled />
-														<!-- <input type="text" class="form-control"> -->
-														<button type="button"
-															class="btn p-0 border-0 btn-outline-dark btn-counter btn-plus"
-															data-calc="+" data-cart_item-index="{cart.itemIndex}"
-															data-cart_item-size="{cart.size}" name="btn_plus">
-															<svg xmlns="http://www.w3.org/2000/svg" width="12"
-																height="12" fill="currentColor" class="bi bi-plus-lg"
-																viewBox="0 0 16 16">
-																<path d="M8 0a1 1 0 0 1 1 1v6h6a1 1 0 1 1 0 2H9v6a1 1 0 1 1-2 0V9H1a1 1 0 0 1 0-2h6V1a1 1 0 0 1 1-1z" />
-															</svg>
-														</button>
-													</div>
-													<!-- <input type="number" inputmode="numeric" value="1"
-														class="form-control" id="quantity" /> -->
-												</div>
-											</div>
-											<div class="d-grid gap-2">
-												<button type="button" class="btn btn-dark text-uppercase btn-addtocart" data-bs-dismiss="modal" data-product-id="${product.id}" disabled>
-													Add To Cart
-												</button>
-											</div>
-										</div>
-									</form>
-									<p class="card-text"></p>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>`
-}
-
-async function orderDetailsHtml() {
-	const products = await getData("products");
-	const cart = getCartStorage();
-	const saleId = products.sort((a, b) => b.sold - a.sold).slice(0, 8).map(item => item.id);
-	let trItems = '';
-	let subTotal = 0;
-
-	cart.forEach((item, itemIndex) => {
-		const itemId = Number(Object.keys(item)[0]);
-		const itemDetail = item[itemId];
-
-		products.forEach((product, index) => {
-			if (product.id === itemId) {
-				for (size in itemDetail) {
-					if (saleId.includes(itemId)) product.price = product.price - (product.price * 30 / 100)
-					qty = item[itemId][size];
-					const cartItem = { itemIndex, size, qty };
-					subTotal += qty * product.price;
-					trItems = trItems.concat(`<tr>
-										<td>
-											<div>
-												<img class="img-fluid"
-													src="${product.imageUrl}"
-													alt="">
-											</div>
-										</td>
-										<td>${product.title}</td>
-										<td>${cartItem.size}</td>
-										<td>${cartItem.qty}</td>
-										<td>${toRupiah(product.price)}</td>
-									</tr>`);
-				}
-			}
-
-		});
-	});
-
-	return `<h5 class="text-uppercase pb-2 mb-2 mb-md-4 border-bottom border-1 ls-1">
-			<button class="p-0 bg-white border-0 fw-500 btn-order-details" type="button"
-				data-bs-toggle="collapse" data-bs-target="#collapseExample"
-				aria-expanded="false" aria-controls="collapseExample">
-				Rincian Pesanan
-			</button>
-			</h5>
-			<div class="collapse show" id="collapseExample">
-				<div class="table-responsive">
-					<table class="table align-middle table-order-details">
-						<tbody>
-							${trItems}
-							<tr class="tr-subtotal">
-								<td class="border-0 fw-500" colspan="2">SUBTOTAL</td>
-								<td class="border-0 fw-600" colspan="3">${toRupiah(subTotal)}</td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
-			</div>`
-}
-
-
-function optionsHtml(params, input) {
-	let html = input.options[0].outerHTML;
-	params.forEach(item => html = html.concat(`<option value="${item[1]}">${item[1]}</option>`))
-	return html;
-}
-
-
-/**
- * @param {Object} data
- * @returns {Node}
- */
-function tableUserHtml(data) {
-	let td = '';
-	const div = document.createElement('div');
-	div.className = 'table-user-wrapper';
-	Object.entries(data).forEach(item => {
-		td = td.concat(`<tr>
-							<td>${item[0]}</td>
-							<td>${item[1]}</td>
-						</tr>`);
-	});
-
-	div.innerHTML = `<div class="table-responsive">
-						<table class="table align-middle table-bordered mb-1 table-user-data">
-							<tbody>
-								${td}
-							</tbody>
-						</table>
-						<div class="text-end text-dark">
-							<a href="javascript:void(0)" class="edit-user-btn">Ubah Penerima</a>
-						</div>
-					 </div>`
-
-	return div;
-}
-
-
-function cartItemHtml(cart, product) {
-
-	return `<div class="card border-0 rounded-0 border-bottom mb-3 pb-sm-2 pb-md-2 cart-item" style="max-width: 540px">
-				<div class="row g-0 align-items-center">
-					<div class="col-3">
-						<a href="#detailModal" type="button" data-bs-toggle="modal" data-product-id="${product.id}" data-bs-dismiss="offcanvas">
-							<img src="${product.imageUrl}" class="img-fluid" alt="${product.title}" />
-						</a>
-					</div>
-					<div class="col-9">
-						<div class="card-body">
-							<h5 class="card-title text-uppercase fs-6 mb-1 cart-item__title">${product.title} - ${cart.size}</h5>
-							<p class="cart-item__price font-secondary fw-300">${toRupiah(product.price)}</p>
-							<div class="cart-item_action d-flex justify-content-between">
-								<div class="d-inline-flex counter-wrapper">
-								<form class="cart-qty-input">
-									<button type="button" class="btn py-1 border-0 rounded-0 btn-outline-dark btn-counter btn-min"
-										data-calc="-" data-cart_item-index="${cart.itemIndex}" data-cart_item-size="${cart.size}">-</button>
-									<input class="d-inline-block text-center p-0 border-0 font-secondary" type="number" id="itemCount"
-										   value="${cart.qty}" max="${product.stock[cart.size.toLowerCase()]}" disabled />
-									<button type="button" class="btn py-1 border-0 rounded-0 btn-outline-dark btn-counter btn-plus"
-											data-calc="+" data-cart_item-index="${cart.itemIndex}" data-cart_item-size="${cart.size}">+</button>						
-								</form>
-								</div>
-								<button class="btn btn-remove text-uppercase p-0 me-md-2" data-cart_item-index="${cart.itemIndex}" data-cart_item-size="${cart.size}">
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										width="16"
-										height="16"
-										fill="currentColor"
-										class="bi bi-trash d-sm-none"
-										viewBox="0 0 16 16">
-										<path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
-										<path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
-									</svg>
-									<span class="d-none d-sm-block span-remove">Remove</span>
-								</button>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>`;
-}
-
-
-/**
- * @returns {String}
- */
-function emptyCartHtml() {
-	return `<div class="card border-0 translate-middle-y top-50">
-				<p class="text-center text-muted ls-1">Your cart is empty</p>
-				<button type="button" class="btn btn-dark rounded-0 py-3 text-uppercase btn-shopnow" data-bs-dismiss="offcanvas">Shop Now</button>
-			</div>`;
-}
-
-//* Function HTML end *//
-
-
-
-
-//* Reusable Functions *//
 
 /**
  * @param {Array} products
@@ -1134,3 +773,374 @@ function toRupiah(price) {
 }
 
 //* Reusable Functions end *//
+
+
+
+
+//* Function HTML *//
+
+/**
+ * @param {Number} subTotal
+ * @returns {String};
+ */
+function checkoutHtml(subTotal) {
+	return `<div class="card border-0 p-3">
+				<div class="d-flex justify-content-between">
+					<p class="font-secondary text-uppercase">Subtotal</p>
+					<p class="fw-500 price-tag">${toRupiah(subTotal)}</p>
+				</div>
+				<button class="btn btn-dark rounded-0 py-2 py-md-3 text-uppercase btn-checkout" data-bs-toggle="modal" data-bs-target="#formModal" data-bs-dismiss="offcanvas">Checkout</button>
+			</div>`;
+}
+
+/**
+ * @param {Object} product
+ * @returns {String}
+ */
+function productCardHtml(product) {
+	const owlItem = (productCardHtml.caller.name === 'loadOwl');
+	const discountPrice = `<span class="text-center d-block price-tag">
+						   	    ${toRupiah(product.price - (product.price * 30 / 100))}
+						   </span>`;
+	const normalPrice = `<span class="text-center d-block price-tag
+							${owlItem ? 'text-mute text-decoration-line-through' : ''}" name="price">
+							${toRupiah(product.price)}
+						 </span>`;
+
+	return `<div class="product-image">
+				<a href="#detailModal" role="button" data-bs-toggle="modal" data-product-id="${product.id}">
+					<img src="${product.imageUrl}" class="img-fluid" alt=""/>
+				</a>
+			</div>
+			<div class="product-description">
+				<div class="product-description__title">
+					<h5 class="text-uppercase text-center mb-1">${product.title}</h5>
+				</div>
+				<div class="product-description__price">
+					${owlItem ? normalPrice + discountPrice : normalPrice}
+				</div>
+			</div>`
+}
+
+
+function paginationHtml(page) {
+	const nav = document.createElement('nav');
+	nav.setAttribute('aria-label', 'Products pagination');
+	nav.innerHTML = `<ul class="pagination products-pagination pagination-sm justify-content-center align-items-center">
+						<li class="page-item px-3 py-2">
+							<a href="javascript:void(0)" class="btn btn-prev lh-1 position-relative p-0 rounded-circle disabled">
+								<svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-arrow-left-circle"
+									viewBox="0 0 16 16">
+									<path fill-rule="evenodd"
+										d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8zm15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-4.5-.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5z" />
+								</svg>
+								<svg xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+									class="bi bi-arrow-left-circle-fill" viewBox="0 0 16 16">
+									<path
+										d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zm3.5 7.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5z" />
+								</svg>
+							</a>
+						</li>
+						<li class="products-pagination__page">Page ${page.currentPage} of ${page.totalPages}</li>
+						<li class="page-item px-3 py-2">
+							<a href="javascript:void(0)" class="btn btn-next lh-1 position-relative p-0 rounded-circle">
+								<svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-arrow-right-circle"
+									viewBox="0 0 16 16">
+									<path fill-rule="evenodd"
+										d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8zm15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H4.5z" />
+								</svg>
+								<svg xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+									class="bi bi-arrow-right-circle-fill" viewBox="0 0 16 16">
+									<path
+										d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0zM4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H4.5z" />
+								</svg>
+							</a>
+						</li>
+					</ul>`
+	return nav;
+}
+
+
+/**
+ * @param {Object} product
+ * @returns {String}
+ */
+function productDetailHtml(product) {
+	const { title, imageUrl, price, description, sizeChartUrl, stock } = product;
+	let sizeOptions = '';
+	const selected = Object.values(product.stock).reduce((total, stock) => total + stock) > 0 ? 'Select Size' : 'SOLD OUT';
+
+
+	for (size in product.stock) {
+
+		if (product.stock[size] > 0) {
+			sizeOptions += `<option value="${size}">${size.toUpperCase()}</option>`;
+		}
+
+	}
+
+	return `<div class="modal-content">
+				<div class="modal-header">
+					<h3 class="modal-title" id="detailModalLabel">Product Detail</h3>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<div class="card mb-3">
+						<div class="row g-0">
+							<div class="col-md-6">
+								<img class="product-img img-fluid" src="${imageUrl}" alt="${title}" />
+							</div>
+							<div class="col-md-6">
+								<div class="card-body">
+									<h4 class="card-title text-uppercase">${title}</h4>
+									<span class="card-subtitle badge rounded-0 bg-dark price-tag">${toRupiah(price)}</span>
+									<div class="accordion accordion-flush mt-4 mt-md-5" id="accordionExample">
+										<div class="accordion-item">
+											<h6 class="accordion-header" id="headingOne">
+												<button class="accordion-button px-0 py-2 shadow-none" type="button"
+													data-bs-toggle="collapse" data-bs-target="#collapseOne"
+													aria-expanded="true" aria-controls="collapseOne">
+													Deskripsi Produk
+												</button>
+											</h6>
+											<div id="collapseOne" class="accordion-collapse collapse show"
+												aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+												<div class="accordion-body px-0">
+													${description}
+												</div>
+											</div>
+										</div>
+										<div class="accordion-item">
+											<h6 class="accordion-header" id="headingTwo">
+												<button class="accordion-button px-0 py-2 shadow-none collapsed"
+													type="button" data-bs-toggle="collapse"
+													data-bs-target="#collapseTwo" aria-expanded="false"
+													aria-controls="collapseTwo">
+													Panduan Ukuran
+												</button>
+											</h6>
+											<div id="collapseTwo" class="accordion-collapse collapse"
+												aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+												<div class="accordion-body px-0">
+												<img class="img-fluid" src="${sizeChartUrl}" >
+												</div>	
+											</div>
+										</div>
+									</div>
+									<form class="mt-3 mt-md-5 form-order">
+										<div class="row">
+											<div class="col-md-6">
+												<div class="mb-2 mb-md-3">
+													<label for="selectSize"
+														class="form-label text-uppercase">Size</label>
+													<div class="form-order__size border-grey">
+														<select class="form-select border-0 select-size font-secondary" name="input_size" aria-label="Select product size">
+															<option selected>${selected}</option>
+															${sizeOptions}
+														</select>
+													</div>
+												</div>
+											</div>
+											<div class="col-md-6">
+												<div class="mb-3">
+													<label for="quantity"
+														class="form-label text-uppercase">Quantity</label>
+													<div class="form-order__quantity d-flex border-grey">
+														<button type="button"
+															class="btn p-0 border-0 btn-outline-dark btn-counter btn-min"
+															data-calc="-" data-cart_item-index="cart.itemIndex"
+															data-cart_item-size="cart.size" name="btn_min">
+															<svg xmlns="http://www.w3.org/2000/svg" width="12"
+																height="12" fill="currentColor" class="bi bi-dash-lg"
+																viewBox="0 0 16 16">
+																<path d="M0 8a1 1 0 0 1 1-1h14a1 1 0 1 1 0 2H1a1 1 0 0 1-1-1z" />
+															</svg>
+														</button>
+														<input class="form-control text-center border-0 input-qty font-secondary"
+															type="number" name="input_qty" value="1"
+															max="{product.stock[cart.size.toLowerCase()]}" disabled />
+														<!-- <input type="text" class="form-control"> -->
+														<button type="button"
+															class="btn p-0 border-0 btn-outline-dark btn-counter btn-plus"
+															data-calc="+" data-cart_item-index="{cart.itemIndex}"
+															data-cart_item-size="{cart.size}" name="btn_plus">
+															<svg xmlns="http://www.w3.org/2000/svg" width="12"
+																height="12" fill="currentColor" class="bi bi-plus-lg"
+																viewBox="0 0 16 16">
+																<path d="M8 0a1 1 0 0 1 1 1v6h6a1 1 0 1 1 0 2H9v6a1 1 0 1 1-2 0V9H1a1 1 0 0 1 0-2h6V1a1 1 0 0 1 1-1z" />
+															</svg>
+														</button>
+													</div>
+													<!-- <input type="number" inputmode="numeric" value="1"
+														class="form-control" id="quantity" /> -->
+												</div>
+											</div>
+											<div class="d-grid gap-2">
+												<button type="button" class="btn btn-dark text-uppercase btn-addtocart" data-bs-dismiss="modal" data-product-id="${product.id}" disabled>
+													Add To Cart
+												</button>
+											</div>
+										</div>
+									</form>
+									<p class="card-text"></p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>`
+}
+
+async function orderDetailsHtml() {
+	const products = await getData("products");
+	const cart = getCartStorage();
+	const saleId = products.sort((a, b) => b.sold - a.sold).slice(0, 8).map(item => item.id);
+	let trItems = '';
+	let subTotal = 0;
+
+	cart.forEach((item, itemIndex) => {
+		const itemId = Number(Object.keys(item)[0]);
+		const itemDetail = item[itemId];
+
+		products.forEach((product, index) => {
+			if (product.id === itemId) {
+				for (size in itemDetail) {
+					if (saleId.includes(itemId)) product.price = product.price - (product.price * 30 / 100)
+					qty = item[itemId][size];
+					const cartItem = { itemIndex, size, qty };
+					subTotal += qty * product.price;
+					trItems = trItems.concat(`<tr>
+										<td>
+											<div>
+												<img class="img-fluid"
+													src="${product.imageUrl}"
+													alt="">
+											</div>
+										</td>
+										<td>${product.title}</td>
+										<td>${cartItem.size}</td>
+										<td>${cartItem.qty}</td>
+										<td>${toRupiah(product.price)}</td>
+									</tr>`);
+				}
+			}
+
+		});
+	});
+
+	return `<h5 class="text-uppercase pb-2 mb-2 mb-md-4 border-bottom border-1 ls-1">
+			<button class="p-0 bg-white border-0 fw-500 btn-order-details" type="button"
+				data-bs-toggle="collapse" data-bs-target="#collapseExample"
+				aria-expanded="false" aria-controls="collapseExample">
+				Rincian Pesanan
+			</button>
+			</h5>
+			<div class="collapse show" id="collapseExample">
+				<div class="table-responsive">
+					<table class="table align-middle table-order-details">
+						<tbody>
+							${trItems}
+							<tr class="tr-subtotal">
+								<td class="border-0 fw-500" colspan="2">SUBTOTAL</td>
+								<td class="border-0 fw-600" colspan="3">${toRupiah(subTotal)}</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>`
+}
+
+
+function optionsHtml(params, input) {
+	let html = input.options[0].outerHTML;
+	params.forEach(item => html = html.concat(`<option value="${item[1]}">${item[1]}</option>`))
+	return html;
+}
+
+
+/**
+ * @param {Object} data
+ * @returns {Node}
+ */
+function tableUserHtml(data) {
+	let td = '';
+	const div = document.createElement('div');
+	div.className = 'table-user-wrapper';
+	Object.entries(data).forEach(item => {
+		td = td.concat(`<tr>
+							<td>${item[0]}</td>
+							<td>${item[1]}</td>
+						</tr>`);
+	});
+
+	div.innerHTML = `<div class="table-responsive">
+						<table class="table align-middle table-bordered mb-1 table-user-data">
+							<tbody>
+								${td}
+							</tbody>
+						</table>
+						<div class="text-end text-dark">
+							<a href="javascript:void(0)" class="edit-user-btn">Ubah Penerima</a>
+						</div>
+					 </div>`
+
+	return div;
+}
+
+
+function cartItemHtml(cart, product) {
+
+	return `<div class="card border-0 rounded-0 border-bottom mb-3 pb-sm-2 pb-md-2 cart-item" style="max-width: 540px">
+				<div class="row g-0 align-items-center">
+					<div class="col-3">
+						<a href="#detailModal" type="button" data-bs-toggle="modal" data-product-id="${product.id}" data-bs-dismiss="offcanvas">
+							<img src="${product.imageUrl}" class="img-fluid" alt="${product.title}" />
+						</a>
+					</div>
+					<div class="col-9">
+						<div class="card-body">
+							<h5 class="card-title text-uppercase fs-6 mb-1 cart-item__title">${product.title} - ${cart.size}</h5>
+							<p class="cart-item__price font-secondary fw-300">${toRupiah(product.price)}</p>
+							<div class="cart-item_action d-flex justify-content-between">
+								<div class="d-inline-flex counter-wrapper">
+								<form class="cart-qty-input">
+									<button type="button" class="btn py-1 border-0 rounded-0 btn-outline-dark btn-counter btn-min"
+										data-calc="-" data-cart_item-index="${cart.itemIndex}" data-cart_item-size="${cart.size}">-</button>
+									<input class="d-inline-block text-center p-0 border-0 font-secondary" type="number" id="itemCount"
+										   value="${cart.qty}" max="${product.stock[cart.size.toLowerCase()]}" disabled />
+									<button type="button" class="btn py-1 border-0 rounded-0 btn-outline-dark btn-counter btn-plus"
+											data-calc="+" data-cart_item-index="${cart.itemIndex}" data-cart_item-size="${cart.size}">+</button>						
+								</form>
+								</div>
+								<button class="btn btn-remove text-uppercase p-0 me-md-2" data-cart_item-index="${cart.itemIndex}" data-cart_item-size="${cart.size}">
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										width="16"
+										height="16"
+										fill="currentColor"
+										class="bi bi-trash d-sm-none"
+										viewBox="0 0 16 16">
+										<path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
+										<path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
+									</svg>
+									<span class="d-none d-sm-block span-remove">Remove</span>
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>`;
+}
+
+
+/**
+ * @returns {String}
+ */
+function emptyCartHtml() {
+	return `<div class="card border-0 translate-middle-y top-50">
+				<p class="text-center text-muted ls-1">Your cart is empty</p>
+				<button type="button" class="btn btn-dark rounded-0 py-3 text-uppercase btn-shopnow" data-bs-dismiss="offcanvas">Shop Now</button>
+			</div>`;
+}
+
+//* Function HTML end *//

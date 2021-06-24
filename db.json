@@ -2,7 +2,7 @@
 	"products": [
 		{
 			"id": 1,
-			"title": "Sabine Top",
+			"title": "Sabine Top 1",
 			"price": 150000,
 			"description": "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Optio voluptatibus quo excepturi officiis, dolore aliquid consequatur nesciunt quis aut expedita unde dicta rem, architecto necessitatibus iusto assumenda dolorem qui voluptates voluptas officia doloremque ab accusantium 1.",
 			"category": "top",
@@ -38,10 +38,10 @@
 			"category": "top",
 			"imageUrl": "images/products/top-3.jpg",
 			"stock": {
-				"s": 10,
-				"m": 5,
-				"l": 15,
-				"xl": 20
+				"s": 0,
+				"m": 0,
+				"l": 0,
+				"xl": 0
 			},
 			"sold": 4
 		},
@@ -131,7 +131,7 @@
 				"s": 10,
 				"m": 5,
 				"l": 15,
-				"xl": 20
+				"xl": 0
 			},
 			"sold": 5
 		},
@@ -278,10 +278,10 @@
 			"category": "skirt",
 			"imageUrl": "images/products/skirt-3.jpg",
 			"stock": {
-				"s": 10,
-				"m": 5,
-				"l": 15,
-				"xl": 20
+				"s": 0,
+				"m": 0,
+				"l": 0,
+				"xl": 0
 			},
 			"sold": 20
 		},
@@ -355,8 +355,8 @@
 			"stock": {
 				"28": 10,
 				"30": 5,
-				"31": 15,
-				"32": 20
+				"32": 15,
+				"34": 20
 			},
 			"sold": 20
 		},
@@ -370,8 +370,8 @@
 			"stock": {
 				"28": 10,
 				"30": 5,
-				"31": 15,
-				"32": 20
+				"32": 15,
+				"34": 20
 			},
 			"sold": 20
 		},
@@ -385,8 +385,8 @@
 			"stock": {
 				"28": 10,
 				"30": 5,
-				"31": 15,
-				"32": 20
+				"32": 15,
+				"34": 20
 			},
 			"sold": 20
 		},
@@ -400,8 +400,8 @@
 			"stock": {
 				"28": 10,
 				"30": 5,
-				"31": 15,
-				"32": 20
+				"32": 15,
+				"34": 20
 			},
 			"sold": 20
 		},
@@ -415,8 +415,8 @@
 			"stock": {
 				"28": 10,
 				"30": 5,
-				"31": 15,
-				"32": 20
+				"32": 15,
+				"34": 20
 			},
 			"sold": 31
 		},
@@ -428,9 +428,7 @@
 			"category": "shoes",
 			"imageUrl": "images/products/shoes-1.jpg",
 			"stock": {
-				"37": 10,
 				"38": 5,
-				"39": 15,
 				"40": 5,
 				"41": 7,
 				"42": 3
@@ -445,9 +443,7 @@
 			"category": "shoes",
 			"imageUrl": "images/products/shoes-2.jpg",
 			"stock": {
-				"37": 10,
 				"38": 5,
-				"39": 15,
 				"40": 5,
 				"41": 7,
 				"42": 3
@@ -462,9 +458,7 @@
 			"category": "shoes",
 			"imageUrl": "images/products/shoes-3.jpg",
 			"stock": {
-				"37": 10,
 				"38": 5,
-				"39": 15,
 				"40": 5,
 				"41": 7,
 				"42": 3
@@ -479,9 +473,7 @@
 			"category": "shoes",
 			"imageUrl": "images/products/shoes-4.jpg",
 			"stock": {
-				"37": 10,
 				"38": 5,
-				"39": 15,
 				"40": 5,
 				"41": 7,
 				"42": 3
@@ -496,9 +488,7 @@
 			"category": "shoes",
 			"imageUrl": "images/products/shoes-5.jpg",
 			"stock": {
-				"37": 10,
 				"38": 5,
-				"39": 15,
 				"40": 5,
 				"41": 7,
 				"42": 3
@@ -513,9 +503,7 @@
 			"category": "shoes",
 			"imageUrl": "images/products/shoes-6.jpg",
 			"stock": {
-				"37": 10,
 				"38": 5,
-				"39": 15,
 				"40": 5,
 				"41": 7,
 				"42": 3
@@ -530,9 +518,7 @@
 			"category": "shoes",
 			"imageUrl": "images/products/shoes-7.jpg",
 			"stock": {
-				"37": 10,
 				"38": 5,
-				"39": 15,
 				"40": 5,
 				"41": 7,
 				"42": 3
@@ -547,9 +533,7 @@
 			"category": "shoes",
 			"imageUrl": "images/products/shoes-8.jpg",
 			"stock": {
-				"37": 10,
 				"38": 5,
-				"39": 15,
 				"40": 5,
 				"41": 7,
 				"42": 3
@@ -559,10 +543,10 @@
 	],
 	"sizecharts": {
 		"top": "images/sizecharts/top.svg",
-		"dress": "images/sizecharts/top.svg",
-		"pants": "images/sizecharts/top.jpg",
-		"skirt": "images/sizecharts/top.jpg",
-		"shorts": "images/sizecharts/top.jpg",
-		"shoes": "images/sizecharts/top.jpg"
+		"dress": "images/sizecharts/dress.svg",
+		"pants": "images/sizecharts/pants.svg",
+		"skirt": "images/sizecharts/skirt.svg",
+		"shorts": "images/sizecharts/shorts.svg",
+		"shoes": "images/sizecharts/shoes.svg"
 	}
 }
